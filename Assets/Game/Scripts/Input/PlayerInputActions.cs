@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-namespace Core.Movement
+namespace Core.PlayerInput
 {
     /// <summary>
     /// Provides programmatic access to <see cref="InputActionAsset" />, <see cref="InputActionMap" />, <see cref="InputAction" /> and <see cref="InputControlScheme" /> instances defined in asset "Assets/Game/Scripts/Input/PlayerInputActions.inputactions".
@@ -197,7 +197,7 @@ namespace Core.Movement
                 {
                     ""name"": """",
                     ""id"": ""5a0a30a0-ea55-4e8c-9c5b-3bea957bde15"",
-                    ""path"": ""<Keyboard>/leftShift"",
+                    ""path"": ""<Keyboard>/q"",
                     ""interactions"": ""Tap"",
                     ""processors"": """",
                     ""groups"": """",
@@ -209,7 +209,7 @@ namespace Core.Movement
                     ""name"": """",
                     ""id"": ""81c61d8b-72b5-401e-aa18-377daccba6bb"",
                     ""path"": ""<Keyboard>/leftShift"",
-                    ""interactions"": ""Hold"",
+                    ""interactions"": ""Hold(duration=0.02,pressPoint=0.02)"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Glide"",

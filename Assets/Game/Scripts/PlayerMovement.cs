@@ -1,10 +1,14 @@
 using System;
 using UnityEngine;
+using Core.PlayerInput;
+using Core.State_Machine;
+
 
 namespace Core.Movement
 {
-    public class PlayerController : MonoBehaviour
+    public class PlayerMovement : MonoBehaviour
     {
+        //[SerializeField] private float magnitude; // for debugging onli cen for school is dum dum
         #region Declaring Variables
         [Header("References")]
         [SerializeField] private InputReader inputReader;
@@ -20,14 +24,16 @@ namespace Core.Movement
         [SerializeField] private float dashSpeed = 8f;
         [SerializeField] private float dashDuration = 0.2f;
         [SerializeField] private float dashCooldown = 1f;
-        [SerializeField] private bool canDashInAir = true;
+        [SerializeField] public bool canDash = true;
+        [SerializeField] public bool canDashInAir = true;
 
         [Header("Jump")]
         [SerializeField] private float jumpForce = 10f;
         [SerializeField] private float doubleJumpForce = 8f;
         [SerializeField] private float fallMultiplier = 2.5f;
-        [SerializeField] private float lowJumpMultiplier = 2f;
 
+
+        // [TODO] : Backlog
         /*[Header("Wall Check & Jump")]
         [SerializeField] private Transform wallCheck;
         [SerializeField] private float wallCheckDistance = 0.5f;
@@ -38,13 +44,16 @@ namespace Core.Movement
 
 
         [Header("Ground Check")]
+        [SerializeField] private bool isGrounded = true;
         [SerializeField] private Transform groundCheck;
         [SerializeField] private Vector2 groundCheckArea = new Vector2(0.8f, 0.1f);
         [SerializeField] private LayerMask groundLayer;
+        
 
         [Header("Glide")]
         [SerializeField] private float glideGravityScale = 0.3f;
         [SerializeField] private float glideMaxFallSpeed = 2f;
+        [SerializeField] public bool canGlide = true;
 
         [Header("Cayote Time & Jump Buffer")]
         [SerializeField] private float coyoteTime = 0.15f;
@@ -52,13 +61,11 @@ namespace Core.Movement
 
         private float normalGravityScale;
         private float currentMovementSpeed;
-
-        private bool isLookingRight = true;
-        private bool isGrounded;
+        
         private bool hasDoubleJump;
         private bool isGliding;
         private bool isDashing;
-        private bool canDash = true;
+        
 
         private float dashTimeCounter;
         private float dashCooldownCounter;
@@ -80,8 +87,8 @@ namespace Core.Movement
         void Awake()
         {
             stateMachine = new StateMachine();
-            normalGravityScale = body.gravityScale;
             SetupStateMachine();
+            normalGravityScale = body.gravityScale;
         }
 
         #region Enable-Disable Input
@@ -112,31 +119,22 @@ namespace Core.Movement
             UpdateTimers();
             FlipSprite();
             stateMachine.Update();
+            //magnitude = body.linearVelocity.magnitude;
         }
 
         void FixedUpdate()
         {
-            /*if (isDashing)
-            {
-                HandleDashMovement();
-            } else
-            {
-                HandleMovement();
-                HandleFall();
-                HandleGlide();
-            }*/
-
-            stateMachine.FixedUpdate();// this will handle those physics-related updates
+            stateMachine.FixedUpdate();
         }
 
 
-        // TODO : Wall Check & Jump
+        // TODO : Wall Check & Jump (Backlog)
 
         private void CheckGrounded()
         {
             bool wasGrounded = isGrounded;
             isGrounded = Physics2D.OverlapBox(groundCheck.position, groundCheckArea, 0f, groundLayer);
-            Debug.Log("is on ground");
+            
 
 
             if (isGrounded && !wasGrounded)
@@ -144,6 +142,7 @@ namespace Core.Movement
                 hasDoubleJump = true;
                 isGliding = false;
                 canDash = true;
+                Debug.Log("is on ground");
             }
         }
 
@@ -271,10 +270,8 @@ namespace Core.Movement
             if (body.linearVelocity.y < 0)
             {
                 body.gravityScale = normalGravityScale * fallMultiplier;
-            } /*else if (body.linearVelocity.y > 0 && !Input.GetKey(KeyCode.Space)) // need to figure this one out lol
-            {
-                body.gravityScale = normalGravityScale * lowJumpMultiplier;
-            }*/ else
+            }  
+            else
             {
                 body.gravityScale = normalGravityScale;
             }
@@ -282,10 +279,7 @@ namespace Core.Movement
         #region Glide
         private void HandleGlideStart()
         {
-            if (!isGrounded && body.linearVelocity.y < 0)
-            {
-                isGliding = true;
-            }
+            isGliding = true;
         }
 
         private void HandleGlideEnd()
@@ -296,7 +290,7 @@ namespace Core.Movement
 
         public void HandleGlide()
         {
-            if (isGliding)
+            if (isGliding && body.linearVelocity.y < 0)
             {
                 body.gravityScale = glideGravityScale;
 
@@ -308,19 +302,15 @@ namespace Core.Movement
         }
         #endregion
 
-
-
         private void FlipSprite()
         {
             if (inputReader.MoveInput > 0.01f)
             {
                 transform.localScale = new Vector3(1, 1, 1);
-                isLookingRight = true;
             }
             else if (inputReader.MoveInput < -0.01f)
             {
                 transform.localScale = new Vector3(-1, 1, 1);
-                isLookingRight = false;
             }
         }
 
@@ -337,28 +327,24 @@ namespace Core.Movement
 
 
             // TODO : Recheck these conditions my guy, they are fcked
-            At(idle, move, () => isGrounded && isLookingRight);
-            At(move, idle, () => isGrounded && !isLookingRight);
-            At(idle, move, () => isGrounded && !isLookingRight);
-            At(move, idle, () => isGrounded && isLookingRight);
+            At(move, idle, () => isGrounded && body.linearVelocity.magnitude == 0);
+            At(idle, move, () => isGrounded && body.linearVelocity.magnitude != 0);
 
-            At(idle, jump, () => isGrounded && inputReader.isJumpPressed);
-            At(move, jump, () => isGrounded && inputReader.isJumpPressed);
-            At(jump, idle, () => isGrounded && body.linearVelocity.y <= 0);
+            At(idle, jump, () => !isGrounded);
+            At(move, jump, () => !isGrounded);
+            At(jump, idle, () => isGrounded && body.linearVelocity.y <= 0 && body.linearVelocity.x >= 0.1f);
             At(jump, move, () => isGrounded && body.linearVelocity.y <= 0);
 
-            At(jump, glide, () => !isGrounded && isGliding && body.linearVelocity.y < 0);
-            At(glide, jump, () => !isGliding); 
             At(glide, idle, () => isGrounded);
 
-            At(idle, dash, () => isDashing);
-            At(move, dash, () => isDashing);
-            At(jump, dash, () => isDashing);
-            At(dash, idle, () => !isDashing && isGrounded);
-            At(dash, jump, () => !isDashing && !isGrounded);
-            At(dash, move, () => !isDashing && isGrounded);
+            At(dash, idle, () => !isDashing);
+            At(dash, jump, () => !isDashing);
+            At(dash, move, () => !isDashing);
 
-            Any(jump, () => !isGrounded && hasDoubleJump && inputReader.isJumpPressed);
+            
+            Any(glide, () => !isGrounded && isGliding);
+            Any(dash, () => isDashing && (isGrounded || canDashInAir));
+            Any(jump, () => !isGrounded && hasDoubleJump);
 
             stateMachine.SetState(idle);
         }

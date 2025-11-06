@@ -1,27 +1,31 @@
 using UnityEngine;
-using Core.Movement;
+using Core.State_Machine;
 
-public class PlayerBaseState : IState
+namespace Core.Movement
 {
-    protected PlayerController player;
-    protected Animator animator;
-
-    protected static readonly int IdleHash = Animator.StringToHash("playerIDLE");
-    protected static readonly int MoveHash = Animator.StringToHash("playerMOVE");
-    protected static readonly int JumpHash = Animator.StringToHash("playerJUMP");
-    protected static readonly int DashHash = Animator.StringToHash("playerDASH");
-    protected static readonly int GlideHash = Animator.StringToHash("playerGLIDE");
-
-    protected const float CrossFadeDuration = 0.1f;
-
-    protected PlayerBaseState(PlayerController player, Animator animator)
+    public class PlayerBaseState : IState
     {
-        this.player = player;
-        this.animator = animator;
+        protected PlayerMovement player;
+        protected Animator animator;
+
+        protected static readonly int IdleHash = Animator.StringToHash("playerIDLE");
+        protected static readonly int MoveHash = Animator.StringToHash("playerMOVE");
+        protected static readonly int JumpHash = Animator.StringToHash("playerJUMP");
+        protected static readonly int DashHash = Animator.StringToHash("playerDASH");
+        protected static readonly int GlideHash = Animator.StringToHash("playerGLIDE");
+
+        protected const float CrossFadeDuration = 0.1f;
+
+        protected PlayerBaseState(PlayerMovement player, Animator animator)
+        {
+            this.player = player;
+            this.animator = animator;
+        }
+
+        public virtual void OnEnter() { }
+        public virtual void Update() { }
+        public virtual void FixedUpdate() { }
+        public virtual void OnExit() { }
     }
 
-    public virtual void OnEnter() { }
-    public virtual void Update() { }
-    public virtual void FixedUpdate() { }
-    public virtual void OnExit() { }
 }

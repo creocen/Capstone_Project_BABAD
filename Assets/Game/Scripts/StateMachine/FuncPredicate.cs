@@ -1,8 +1,11 @@
 using System;
 
-public class FuncPredicate : IPredicate
+namespace Core.State_Machine
 {
-    readonly Func<bool> func;
-    public FuncPredicate(Func<bool> func) => this.func = func;
-    public bool Evaluate() => func();
+    public class FuncPredicate : IPredicate
+    {
+        readonly Func<bool> func;
+        public FuncPredicate(Func<bool> func) => this.func = func;
+        public bool Evaluate() => func();
+    }
 }

@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Core.Movement
+namespace Core.PlayerInput
 {
     public class InputReader : MonoBehaviour, PlayerInputActions.IPlayerActions
     {
@@ -15,8 +15,7 @@ namespace Core.Movement
         public event Action InteractPressed;
 
         public float MoveInput { get; private set; }
-        public bool isGlideHeld { get; private set; }
-        public bool isJumpPressed { get; private set; }
+        public bool isJumpReleased { get; private set; }
 
         PlayerInputActions inputActions;
 
@@ -58,12 +57,12 @@ namespace Core.Movement
             if (ctx.performed)
             {
                 JumpPressed?.Invoke();
-                isJumpPressed = true;
+                isJumpReleased = false;
             }
             if (ctx.canceled)
             {
                 JumpReleased?.Invoke();
-                isJumpPressed = false;
+                isJumpReleased = true;
             }
         }
 
@@ -82,12 +81,10 @@ namespace Core.Movement
             if (ctx.performed)
             {
                 GlidePressed?.Invoke();
-                isGlideHeld = true;
             }
             if (ctx.canceled)
             {
                 GlideReleased?.Invoke();
-                isGlideHeld = false;
             }
         }
 
@@ -96,4 +93,5 @@ namespace Core.Movement
             if (ctx.performed) InteractPressed?.Invoke();
         }
     }
+
 }

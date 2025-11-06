@@ -1,18 +1,23 @@
 using UnityEngine;
-using Core.Movement;
+using Core.State_Machine;
 
-public class PlayerJumpState : PlayerBaseState
+namespace Core.Movement
 {
-    public PlayerJumpState(PlayerController player, Animator animator) : base(player, animator) { }
-
-    public override void OnEnter()
+    public class PlayerJumpState : PlayerBaseState
     {
-        animator.CrossFade(JumpHash, CrossFadeDuration);
-    }
+        public PlayerJumpState(PlayerMovement player, Animator animator) : base(player, animator) { }
 
-    public override void FixedUpdate()
-    {
-        player.HandleMovement();
-        player.HandleFall();
+        public override void OnEnter()
+        {
+            animator.CrossFade(JumpHash, CrossFadeDuration);
+        }
+
+        public override void FixedUpdate()
+        {
+            player.canDashInAir = true;
+            player.HandleMovement();
+            player.HandleFall();
+
+        }
     }
 }

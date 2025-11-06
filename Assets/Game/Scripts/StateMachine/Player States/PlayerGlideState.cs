@@ -1,18 +1,22 @@
 using UnityEngine;
-using Core.Movement;
+using Core.State_Machine;
 
-public class PlayerGlideState : PlayerBaseState
+namespace Core.Movement
 {
-    public PlayerGlideState(PlayerController player, Animator animator) : base(player, animator) { }
-
-    public override void OnEnter()
+    public class PlayerGlideState : PlayerBaseState
     {
-        animator.CrossFade(GlideHash, CrossFadeDuration);
+        public PlayerGlideState(PlayerMovement player, Animator animator) : base(player, animator) { }
+
+        public override void OnEnter()
+        {
+            animator.CrossFade(GlideHash, 0.01f);
+        }
+
+        public override void FixedUpdate()
+        {
+            player.HandleGlide();
+            player.HandleMovement();
+        }
     }
 
-    public override void FixedUpdate()
-    {
-        player.HandleMovement();
-        player.HandleGlide();
-    }
 }

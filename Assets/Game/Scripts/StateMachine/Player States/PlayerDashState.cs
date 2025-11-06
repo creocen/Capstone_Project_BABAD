@@ -1,17 +1,22 @@
 using UnityEngine;
-using Core.Movement;
+using Core.State_Machine;
 
-public class PlayerDashState : PlayerBaseState
+namespace Core.Movement
 {
-    public PlayerDashState(PlayerController player, Animator animator) : base(player, animator) { }
-
-    public override void OnEnter()
+    public class PlayerDashState : PlayerBaseState
     {
-        animator.CrossFade(DashHash, CrossFadeDuration);
-    }
+        public PlayerDashState(PlayerMovement player, Animator animator) : base(player, animator) { }
 
-    public override void FixedUpdate()
-    {
-        player.HandleDashMovement();
+        public override void OnEnter()
+        {
+            animator.CrossFade(DashHash, 0.01f);
+        }
+
+        public override void FixedUpdate()
+        {
+            player.HandleDashMovement();
+        }
     }
 }
+
+

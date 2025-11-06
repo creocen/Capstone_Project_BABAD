@@ -1,18 +1,20 @@
 using UnityEngine;
-using Core.Movement;
+using Core.State_Machine;
 
-public class PlayerMoveState : PlayerBaseState
+namespace Core.Movement
 {
-    public PlayerMoveState(PlayerController player, Animator animator) : base(player, animator) { }
-
-    public override void OnEnter()
+    public class PlayerMoveState : PlayerBaseState
     {
-        animator.CrossFade(MoveHash, CrossFadeDuration);
-    }
+        public PlayerMoveState(PlayerMovement player, Animator animator) : base(player, animator) { }
 
-    public override void FixedUpdate()
-    {
-        player.HandleMovement();
-        player.HandleFall();
+        public override void OnEnter()
+        {
+            animator.CrossFade(MoveHash, CrossFadeDuration);
+        }
+
+        public override void FixedUpdate()
+        {
+            player.HandleMovement();
+        }
     }
 }

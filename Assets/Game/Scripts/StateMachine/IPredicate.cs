@@ -1,4 +1,7 @@
-public interface IPredicate
+namespace Core.State_Machine
 {
-    bool Evaluate();
+    public interface IPredicate
+    {
+        bool Evaluate();
+    }
 }
