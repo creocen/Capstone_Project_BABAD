@@ -27,19 +27,22 @@ namespace Core.PlayerInput
 
         void Awake()
         {
-            inputActions = new PlayerInputActions();
+            /*inputActions = new PlayerInputActions();
             inputActions.Player.SetCallbacks(this);
-            inputActions.TowerBuilder.SetCallbacks(this);
+            inputActions.TowerBuilder.SetCallbacks(this);*/
+            InitializeInputActions();
         }
 
         void OnEnable()
         {
-            /*if (inputActions == null)
+            if (inputActions == null)
             {
-                inputActions = new PlayerInputActions();
-                inputActions.Player.SetCallbacks(this);
+                /*inputActions = new PlayerInputActions();
+                inputActions.Player.SetCallbacks(this);*/
+
+                InitializeInputActions();
             }
-            inputActions.Player.Enable();*/
+            //inputActions.Player.Enable();
 
             EnablePlayerInput(); // Starts with PlayerInput by default
         }
@@ -64,20 +67,35 @@ namespace Core.PlayerInput
             }
         }
 
+        void InitializeInputActions()
+        {
+            if (inputActions == null)
+            {
+                inputActions = new PlayerInputActions();
+                inputActions.Player.SetCallbacks(this);
+                inputActions.TowerBuilder.SetCallbacks(this);
+            }
+        }
+
         public void EnablePlayerInput()
         {
+            if (inputActions == null) return;
             inputActions.TowerBuilder.Disable();
             inputActions.Player.Enable();
+            Debug.Log("Player Input Enabled");
         }
 
         public void EnableTowerBuilderInput()
         {
+            if (inputActions == null) return;
             inputActions.Player.Disable();
             inputActions.TowerBuilder.Enable();
+            Debug.Log("TowerBuilder Input Enabled");
         }
 
         public void DisableAllInputs()
         {
+            if (inputActions == null) return;
             inputActions.Player.Disable();
             inputActions.TowerBuilder.Disable();
         }

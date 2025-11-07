@@ -33,7 +33,7 @@ namespace Core.Movement
         [SerializeField] private float fallMultiplier = 2.5f;
 
 
-        // [TODO] : Backlog
+        // [ B A C K L O G ]
         /*[Header("Wall Check & Jump")]
         [SerializeField] private Transform wallCheck;
         [SerializeField] private float wallCheckDistance = 0.5f;

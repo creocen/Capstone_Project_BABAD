@@ -1,8 +1,9 @@
 using UnityEngine;
 using Core.State_Machine;
 using Core.PlayerInput;
+using Core.Movement;
 
-namespace Core.Movement
+namespace Core.InputStates
 {
     public class PlayerBaseState : IState
     {
@@ -20,7 +21,7 @@ namespace Core.Movement
 
         protected const float CrossFadeDuration = 0.1f;
 
-        protected PlayerBaseState(PlayerMovement player, Animator animator, InputReader inputReader)
+        protected internal PlayerBaseState(PlayerMovement player, Animator animator, InputReader inputReader)
         {
             this.player = player;
             this.animator = animator;
