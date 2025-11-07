@@ -151,6 +151,45 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Tower Builder",
+            "id": "704c6a8f-e33e-4a63-807d-bdbb43436873",
+            "actions": [
+                {
+                    "name": "Drop Block",
+                    "type": "Button",
+                    "id": "9fb5d497-9e03-4fa9-b736-22117472c68d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "e7cf0e92-2797-4c22-bd4b-9807ac9fd87d",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Drop Block",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1aac5079-8de5-4d8d-b5b2-df203fb712bf",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Drop Block",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []

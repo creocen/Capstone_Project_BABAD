@@ -1,10 +1,14 @@
 using UnityEngine;
 using Core.State_Machine;
+using Core.PlayerInput;
 
 namespace Core.Movement
 {
     public class PlayerBaseState : IState
     {
+        readonly InputReader inputReader;
+
+
         protected PlayerMovement player;
         protected Animator animator;
 
@@ -16,13 +20,14 @@ namespace Core.Movement
 
         protected const float CrossFadeDuration = 0.1f;
 
-        protected PlayerBaseState(PlayerMovement player, Animator animator)
+        protected PlayerBaseState(PlayerMovement player, Animator animator, InputReader inputReader)
         {
             this.player = player;
             this.animator = animator;
+            this.inputReader = inputReader;
         }
 
-        public virtual void OnEnter() { }
+        public virtual void OnEnter() { inputReader.EnablePlayerInput(); }
         public virtual void Update() { }
         public virtual void FixedUpdate() { }
         public virtual void OnExit() { }

@@ -239,6 +239,45 @@ namespace Core.PlayerInput
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Tower Builder"",
+            ""id"": ""704c6a8f-e33e-4a63-807d-bdbb43436873"",
+            ""actions"": [
+                {
+                    ""name"": ""Drop Block"",
+                    ""type"": ""Button"",
+                    ""id"": ""9fb5d497-9e03-4fa9-b736-22117472c68d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""e7cf0e92-2797-4c22-bd4b-9807ac9fd87d"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Drop Block"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1aac5079-8de5-4d8d-b5b2-df203fb712bf"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Drop Block"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -251,11 +290,15 @@ namespace Core.PlayerInput
             m_Player_Glide = m_Player.FindAction("Glide", throwIfNotFound: true);
             m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
             m_Player_DoubleJump = m_Player.FindAction("Double Jump", throwIfNotFound: true);
+            // Tower Builder
+            m_TowerBuilder = asset.FindActionMap("Tower Builder", throwIfNotFound: true);
+            m_TowerBuilder_DropBlock = m_TowerBuilder.FindAction("Drop Block", throwIfNotFound: true);
         }
 
         ~@PlayerInputActions()
         {
             UnityEngine.Debug.Assert(!m_Player.enabled, "This will cause a leak and performance issues, PlayerInputActions.Player.Disable() has not been called.");
+            UnityEngine.Debug.Assert(!m_TowerBuilder.enabled, "This will cause a leak and performance issues, PlayerInputActions.TowerBuilder.Disable() has not been called.");
         }
 
         /// <summary>
@@ -478,6 +521,102 @@ namespace Core.PlayerInput
         /// Provides a new <see cref="PlayerActions" /> instance referencing this action map.
         /// </summary>
         public PlayerActions @Player => new PlayerActions(this);
+
+        // Tower Builder
+        private readonly InputActionMap m_TowerBuilder;
+        private List<ITowerBuilderActions> m_TowerBuilderActionsCallbackInterfaces = new List<ITowerBuilderActions>();
+        private readonly InputAction m_TowerBuilder_DropBlock;
+        /// <summary>
+        /// Provides access to input actions defined in input action map "Tower Builder".
+        /// </summary>
+        public struct TowerBuilderActions
+        {
+            private @PlayerInputActions m_Wrapper;
+
+            /// <summary>
+            /// Construct a new instance of the input action map wrapper class.
+            /// </summary>
+            public TowerBuilderActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+            /// <summary>
+            /// Provides access to the underlying input action "TowerBuilder/DropBlock".
+            /// </summary>
+            public InputAction @DropBlock => m_Wrapper.m_TowerBuilder_DropBlock;
+            /// <summary>
+            /// Provides access to the underlying input action map instance.
+            /// </summary>
+            public InputActionMap Get() { return m_Wrapper.m_TowerBuilder; }
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+            public void Enable() { Get().Enable(); }
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+            public void Disable() { Get().Disable(); }
+            /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+            public bool enabled => Get().enabled;
+            /// <summary>
+            /// Implicitly converts an <see ref="TowerBuilderActions" /> to an <see ref="InputActionMap" /> instance.
+            /// </summary>
+            public static implicit operator InputActionMap(TowerBuilderActions set) { return set.Get(); }
+            /// <summary>
+            /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+            /// </summary>
+            /// <param name="instance">Callback instance.</param>
+            /// <remarks>
+            /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+            /// </remarks>
+            /// <seealso cref="TowerBuilderActions" />
+            public void AddCallbacks(ITowerBuilderActions instance)
+            {
+                if (instance == null || m_Wrapper.m_TowerBuilderActionsCallbackInterfaces.Contains(instance)) return;
+                m_Wrapper.m_TowerBuilderActionsCallbackInterfaces.Add(instance);
+                @DropBlock.started += instance.OnDropBlock;
+                @DropBlock.performed += instance.OnDropBlock;
+                @DropBlock.canceled += instance.OnDropBlock;
+            }
+
+            /// <summary>
+            /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+            /// </summary>
+            /// <remarks>
+            /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+            /// </remarks>
+            /// <seealso cref="TowerBuilderActions" />
+            private void UnregisterCallbacks(ITowerBuilderActions instance)
+            {
+                @DropBlock.started -= instance.OnDropBlock;
+                @DropBlock.performed -= instance.OnDropBlock;
+                @DropBlock.canceled -= instance.OnDropBlock;
+            }
+
+            /// <summary>
+            /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="TowerBuilderActions.UnregisterCallbacks(ITowerBuilderActions)" />.
+            /// </summary>
+            /// <seealso cref="TowerBuilderActions.UnregisterCallbacks(ITowerBuilderActions)" />
+            public void RemoveCallbacks(ITowerBuilderActions instance)
+            {
+                if (m_Wrapper.m_TowerBuilderActionsCallbackInterfaces.Remove(instance))
+                    UnregisterCallbacks(instance);
+            }
+
+            /// <summary>
+            /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+            /// </summary>
+            /// <remarks>
+            /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+            /// </remarks>
+            /// <seealso cref="TowerBuilderActions.AddCallbacks(ITowerBuilderActions)" />
+            /// <seealso cref="TowerBuilderActions.RemoveCallbacks(ITowerBuilderActions)" />
+            /// <seealso cref="TowerBuilderActions.UnregisterCallbacks(ITowerBuilderActions)" />
+            public void SetCallbacks(ITowerBuilderActions instance)
+            {
+                foreach (var item in m_Wrapper.m_TowerBuilderActionsCallbackInterfaces)
+                    UnregisterCallbacks(item);
+                m_Wrapper.m_TowerBuilderActionsCallbackInterfaces.Clear();
+                AddCallbacks(instance);
+            }
+        }
+        /// <summary>
+        /// Provides a new <see cref="TowerBuilderActions" /> instance referencing this action map.
+        /// </summary>
+        public TowerBuilderActions @TowerBuilder => new TowerBuilderActions(this);
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Player" which allows adding and removing callbacks.
         /// </summary>
@@ -527,6 +666,21 @@ namespace Core.PlayerInput
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnDoubleJump(InputAction.CallbackContext context);
+        }
+        /// <summary>
+        /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Tower Builder" which allows adding and removing callbacks.
+        /// </summary>
+        /// <seealso cref="TowerBuilderActions.AddCallbacks(ITowerBuilderActions)" />
+        /// <seealso cref="TowerBuilderActions.RemoveCallbacks(ITowerBuilderActions)" />
+        public interface ITowerBuilderActions
+        {
+            /// <summary>
+            /// Method invoked when associated input action "Drop Block" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnDropBlock(InputAction.CallbackContext context);
         }
     }
 }

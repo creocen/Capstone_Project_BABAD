@@ -316,11 +316,11 @@ namespace Core.Movement
 
         void SetupStateMachine()
         {
-            var idle = new PlayerIdleState(this, animator);
-            var move = new PlayerMoveState(this, animator);
-            var jump = new PlayerJumpState(this, animator);
-            var dash = new PlayerDashState(this, animator);
-            var glide = new PlayerGlideState(this, animator);
+            var idle = new PlayerIdleState(this, animator, inputReader);
+            var move = new PlayerMoveState(this, animator, inputReader);
+            var jump = new PlayerJumpState(this, animator, inputReader);
+            var dash = new PlayerDashState(this, animator, inputReader);
+            var glide = new PlayerGlideState(this, animator, inputReader);
 
             void At(IState from, IState to, Func<bool> condition) => stateMachine.AddTransition(from, to, new FuncPredicate(condition));
             void Any(IState to, Func<bool> condition) => stateMachine.AddAnyTransition(to, new FuncPredicate(condition));

@@ -4,8 +4,9 @@ using UnityEngine.InputSystem;
 
 namespace Core.PlayerInput
 {
-    public class InputReader : MonoBehaviour, PlayerInputActions.IPlayerActions
+    public class InputReader : MonoBehaviour, PlayerInputActions.IPlayerActions, PlayerInputActions.ITowerBuilderActions
     {
+        #region Player Movement Events
         public event Action JumpPressed;
         public event Action JumpReleased;
         public event Action DoubleJumpPressed;
@@ -13,39 +14,75 @@ namespace Core.PlayerInput
         public event Action GlidePressed;
         public event Action GlideReleased;
         public event Action InteractPressed;
+        #endregion
+
+        #region Tower Builder Events
+        public event Action DropBlockPressed;
+        #endregion
 
         public float MoveInput { get; private set; }
         public bool isJumpReleased { get; private set; }
 
         PlayerInputActions inputActions;
 
+        void Awake()
+        {
+            inputActions = new PlayerInputActions();
+            inputActions.Player.SetCallbacks(this);
+            inputActions.TowerBuilder.SetCallbacks(this);
+        }
+
         void OnEnable()
         {
-            if (inputActions == null)
+            /*if (inputActions == null)
             {
                 inputActions = new PlayerInputActions();
                 inputActions.Player.SetCallbacks(this);
             }
-            inputActions.Player.Enable();
+            inputActions.Player.Enable();*/
+
+            EnablePlayerInput(); // Starts with PlayerInput by default
         }
 
         void OnDisable()
         {
-            if (inputActions != null)
+            /*if (inputActions != null)
             {
                 inputActions.Player.Disable();
-            }
+            }*/
+
+            DisableAllInputs();
         }
 
         void OnDestroy()
         {
             if (inputActions != null)
             {
-                inputActions.Player.Disable();
+                //inputActions.Player.Disable();
+                DisableAllInputs();
                 inputActions.Dispose();
             }
         }
 
+        public void EnablePlayerInput()
+        {
+            inputActions.TowerBuilder.Disable();
+            inputActions.Player.Enable();
+        }
+
+        public void EnableTowerBuilderInput()
+        {
+            inputActions.Player.Disable();
+            inputActions.TowerBuilder.Enable();
+        }
+
+        public void DisableAllInputs()
+        {
+            inputActions.Player.Disable();
+            inputActions.TowerBuilder.Disable();
+        }
+
+        #region Player Action Callbacks
         public void OnMove(InputAction.CallbackContext ctx)
         {
             Vector2 input = ctx.ReadValue<Vector2>();
@@ -92,6 +129,14 @@ namespace Core.PlayerInput
         {
             if (ctx.performed) InteractPressed?.Invoke();
         }
+        #endregion
+
+        #region Tower Builder Action Callbacks
+        public void OnDropBlock(InputAction.CallbackContext ctx)
+        {
+            if (ctx.performed) DropBlockPressed?.Invoke();
+        }
+        #endregion
     }
 
 }
