@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 namespace Core.PlayerInput
 {
-    public class InputReader : MonoBehaviour, PlayerInputActions.IPlayerActions, PlayerInputActions.ITowerBuilderActions
+    public class InputReader : MonoBehaviour, PlayerInputActions.IPlayerActions, PlayerInputActions.IUIActions, PlayerInputActions.ITowerBuilderActions
     {
         #region Player Movement Events
         public event Action JumpPressed;
@@ -18,6 +18,11 @@ namespace Core.PlayerInput
 
         #region Tower Builder Events
         public event Action DropBlockPressed;
+        #endregion
+
+        #region UI
+        public event Action NextLinePressed;
+        public event Action EndDialoguePressed;
         #endregion
 
         public float MoveInput { get; private set; }
@@ -74,6 +79,7 @@ namespace Core.PlayerInput
                 inputActions = new PlayerInputActions();
                 inputActions.Player.SetCallbacks(this);
                 inputActions.TowerBuilder.SetCallbacks(this);
+                inputActions.UI.SetCallbacks(this);
             }
         }
 
@@ -81,6 +87,7 @@ namespace Core.PlayerInput
         {
             if (inputActions == null) return;
             inputActions.TowerBuilder.Disable();
+            inputActions.UI.Disable();
             inputActions.Player.Enable();
             Debug.Log("Player Input Enabled");
         }
@@ -89,8 +96,18 @@ namespace Core.PlayerInput
         {
             if (inputActions == null) return;
             inputActions.Player.Disable();
+            inputActions.UI.Disable();
             inputActions.TowerBuilder.Enable();
             Debug.Log("TowerBuilder Input Enabled");
+        }
+
+        public void EnableUIInput()
+        {
+            if (inputActions == null) return;
+            inputActions.Player.Disable();
+            inputActions.TowerBuilder.Disable();
+            inputActions.UI.Enable();
+            Debug.Log("UI Input Enabled");
         }
 
         public void DisableAllInputs()
@@ -98,6 +115,7 @@ namespace Core.PlayerInput
             if (inputActions == null) return;
             inputActions.Player.Disable();
             inputActions.TowerBuilder.Disable();
+            inputActions.UI.Disable();
         }
 
         #region Player Action Callbacks
@@ -153,6 +171,18 @@ namespace Core.PlayerInput
         public void OnDropBlock(InputAction.CallbackContext ctx)
         {
             if (ctx.performed) DropBlockPressed?.Invoke();
+        }
+        #endregion
+
+        #region UI Action Callbacks
+        public void OnNextLine(InputAction.CallbackContext ctx)
+        {
+            if (ctx.performed) NextLinePressed?.Invoke();
+        }
+
+        public void OnEndDialogue(InputAction.CallbackContext ctx)
+        {
+            if (ctx.performed) EndDialoguePressed?.Invoke();
         }
         #endregion
     }

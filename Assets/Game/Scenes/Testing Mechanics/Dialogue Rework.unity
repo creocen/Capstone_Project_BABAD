@@ -253,6 +253,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Core.InputStates.GameStateManager
   animator: {fileID: 1783277366}
   inputReader: {fileID: 1783277365}
+  dialogueManager: {fileID: 790934894}
   playerBaseMovement: {fileID: 1783277369}
   playerBlockDropper: {fileID: 0}
 --- !u!4 &202039431
@@ -1074,7 +1075,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &715105073
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1171,6 +1172,7 @@ MonoBehaviour:
   spritePandesal: {fileID: -3357051272231493604, guid: cb39519b8577e4f45a1892b5584513b6, type: 3}
   dialogueCollection: {fileID: 5022602860645237092, guid: 066a778cfdf0d444dab450b0e6fa4edd, type: 3}
   input: {fileID: 1783277365}
+  stateManager: {fileID: 202039430}
   startingDialogueID: 
 --- !u!4 &790934895
 Transform:
@@ -1199,28 +1201,14 @@ GameObject:
   - component: {fileID: 870897994}
   - component: {fileID: 870897993}
   - component: {fileID: 870897992}
-  - component: {fileID: 870897991}
+  - component: {fileID: 870897996}
   m_Layer: 0
-  m_Name: NPC (1)
+  m_Name: NPC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &870897991
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 870897990}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ac37841699bf524590b2ba5d3ac2b98, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SampleInteraction
-  npcName: JobertPandecoco
-  stateManager: {fileID: 202039430}
 --- !u!95 &870897992
 Animator:
   serializedVersion: 7
@@ -1362,6 +1350,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &870897996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 870897990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a3c9c909735c94a8f97092fdef7725, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Core.Interactions.TriggerDialogue
+  npcName: JubertPandecoco
+  stateManager: {fileID: 202039430}
 --- !u!1 &949014160
 GameObject:
   m_ObjectHideFlags: 0
@@ -1373,6 +1375,7 @@ GameObject:
   - component: {fileID: 949014163}
   - component: {fileID: 949014162}
   - component: {fileID: 949014161}
+  - component: {fileID: 949014164}
   m_Layer: 5
   m_Name: Options  Panel
   m_TagString: Untagged
@@ -1393,7 +1396,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1437,6 +1440,32 @@ RectTransform:
   m_AnchoredPosition: {x: 425, y: 260}
   m_SizeDelta: {x: -543.8373, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &949014164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 949014160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.VerticalLayoutGroup
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 6
+  m_Spacing: 0.5
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &1001578756
 GameObject:
   m_ObjectHideFlags: 0
@@ -1699,7 +1728,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1444324810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2231,7 +2260,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1981992663
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2395,6 +2424,6 @@ SceneRoots:
   - {fileID: 870897995}
   - {fileID: 505947249}
   - {fileID: 1444324813}
-  - {fileID: 202039431}
   - {fileID: 122250346}
   - {fileID: 790934895}
+  - {fileID: 202039431}
