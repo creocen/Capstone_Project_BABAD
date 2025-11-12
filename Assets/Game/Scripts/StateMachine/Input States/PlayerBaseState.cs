@@ -28,7 +28,7 @@ namespace Core.InputStates
             this.inputReader = inputReader;
         }
 
-        public virtual void OnEnter() { inputReader.EnablePlayerInput(); }
+        public virtual void OnEnter() {  }
         public virtual void Update() { }
         public virtual void FixedUpdate() { }
         public virtual void OnExit() { }
