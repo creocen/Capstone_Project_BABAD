@@ -8,18 +8,18 @@ public class ComputerPaddle : Paddle
 
     private void FixedUpdate()
     {
+        if (ball == null)
+        {
+            return;
+        }
+
         Vector2 direction = ball.linearVelocity.normalized;
         RaycastHit2D hit = Physics2D.Raycast(ball.position, direction, predictionDistance, wallLayer);
 
-        float targetY;
-
+        float targetY = ball.position.y;
         if (hit.collider != null)
         {
             targetY = hit.point.y;
-        }
-        else
-        {
-            targetY = ball.position.y;
         }
 
         if (targetY > rb.position.y)

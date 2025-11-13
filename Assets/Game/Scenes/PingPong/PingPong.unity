@@ -1235,7 +1235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caff6df314698b74599a166c1624d388, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerPaddle
-  speed: 8
+  speed: 12
   useDynamicBounce: 1
 --- !u!114 &1150106989
 MonoBehaviour:
@@ -2444,7 +2444,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d2946628bd34b04cbc3952ef657553f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Ball
-  baseSpeed: 5
+  baseSpeed: 10
   maxSpeed: 40
   overlapPushDistance: 0.05
 --- !u!1660057539 &9223372036854775807

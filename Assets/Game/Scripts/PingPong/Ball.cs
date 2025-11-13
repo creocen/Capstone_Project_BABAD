@@ -8,6 +8,8 @@ public class Ball : MonoBehaviour
     [SerializeField] private float overlapPushDistance = 0.05f;
 
     private float currentSpeed;
+    private bool hardModeActive;
+    private float hardModeMultiplier = 1f;
     private Rigidbody2D rb;
 
     private void Awake()
@@ -24,7 +26,7 @@ public class Ball : MonoBehaviour
 
     public void LaunchBall()
     {
-        Vector2 direction;
+        Vector2 direction = Vector2.zero;
         int rand = Random.Range(0, 2);
 
         if (rand == 0)
@@ -37,19 +39,27 @@ public class Ball : MonoBehaviour
         }
 
         rb.AddForce(direction.normalized * currentSpeed, ForceMode2D.Impulse);
-
         Invoke(nameof(EnableVerticalVariance), 0.3f);
     }
 
     private void EnableVerticalVariance()
     {
         Vector2 lv = rb.linearVelocity;
-        if (lv.magnitude == 0f) return;
+        if (lv.magnitude == 0f)
+        {
+            return;
+        }
 
         float y = Random.Range(-0.5f, 0.5f);
         rb.linearVelocity = new Vector2(lv.x, y).normalized * currentSpeed;
     }
 
+    public void EnableHardMode(float multiplier)
+    {
+        hardModeActive = true;
+        hardModeMultiplier = multiplier;
+        IncreaseSpeed(multiplier);
+    }
 
     public void IncreaseSpeed(float multiplier)
     {
@@ -61,10 +71,9 @@ public class Ball : MonoBehaviour
         }
 
         Vector2 lv = rb.linearVelocity;
-        float mag = lv.magnitude;
-        if (mag > 0f)
+        if (lv.sqrMagnitude > 0f)
         {
-            rb.linearVelocity = (lv / mag) * currentSpeed;
+            rb.linearVelocity = lv.normalized * currentSpeed;
         }
     }
 
@@ -72,7 +81,10 @@ public class Ball : MonoBehaviour
     {
         Vector2 lv = rb.linearVelocity;
         float mag = lv.magnitude;
-        if (mag == 0f) return;
+        if (mag == 0f)
+        {
+            return;
+        }
 
         Vector2 direction = lv / mag;
         float targetSpeed = currentSpeed;
@@ -85,18 +97,23 @@ public class Ball : MonoBehaviour
         rb.linearVelocity = direction * targetSpeed;
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (!collision.collider.CompareTag("Paddle")) return;
+        if (!collision.collider.CompareTag("Paddle"))
+        {
+            return;
+        }
 
-        float hitFactor = (transform.position.y - collision.transform.position.y) / collision.collider.bounds.size.y;
+        float hitFactor = (transform.position.y - collision.transform.position.y) /
+                          collision.collider.bounds.size.y;
 
         Vector2 current = rb.linearVelocity;
         float speed = current.magnitude;
 
-        Vector2 direction = new Vector2(-Mathf.Sign(current.x), hitFactor).normalized;
-        rb.linearVelocity = direction * speed;
+        float directionX = -Mathf.Sign(current.x);
+        Vector2 direction = new Vector2(directionX, hitFactor).normalized;
 
+        rb.linearVelocity = direction * speed;
         transform.position = transform.position + (Vector3)(direction * overlapPushDistance);
     }
 
@@ -105,7 +122,14 @@ public class Ball : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
         transform.position = Vector2.zero;
 
-        currentSpeed = baseSpeed;
+        if (hardModeActive)
+        {
+            currentSpeed = baseSpeed * hardModeMultiplier;
+        }
+        else
+        {
+            currentSpeed = baseSpeed;
+        }
 
         Invoke(nameof(LaunchBall), 0.6f);
     }

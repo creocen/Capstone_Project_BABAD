@@ -40,12 +40,9 @@ public class GameManager : MonoBehaviour
     {
         timer = timer + Time.deltaTime;
 
-        if (!hardModeActive)
+        if (!hardModeActive && timer >= hardModeTime)
         {
-            if (timer >= hardModeTime)
-            {
-                ActivateHardMode();
-            }
+            ActivateHardMode();
         }
 
         UpdateDebugHUD();
@@ -67,12 +64,12 @@ public class GameManager : MonoBehaviour
 
     private void UpdateScoreUI()
     {
-        if (playerScoreText)
+        if (playerScoreText != null)
         {
             playerScoreText.text = playerScore.ToString();
         }
 
-        if (cpuScoreText)
+        if (cpuScoreText != null)
         {
             cpuScoreText.text = cpuScore.ToString();
         }
@@ -87,11 +84,11 @@ public class GameManager : MonoBehaviour
     {
         hardModeActive = true;
 
-        ball.IncreaseSpeed(hardModeSpeedMultiplier);
+        ball.EnableHardMode(hardModeSpeedMultiplier);
         player.speed = player.speed * hardModePaddleSpeedMultiplier;
         cpu.speed = cpu.speed * hardModePaddleSpeedMultiplier;
 
-        if (!mainCamera)
+        if (mainCamera == null)
         {
             mainCamera = Camera.main;
         }
@@ -102,6 +99,7 @@ public class GameManager : MonoBehaviour
     private void UpdateDebugHUD()
     {
         float ballSpeed = 0f;
+
         if (ballRB != null)
         {
             ballSpeed = ballRB.linearVelocity.magnitude;
@@ -119,7 +117,8 @@ public class GameManager : MonoBehaviour
                 "Player: " + playerScore +
                 " | CPU: " + cpuScore +
                 "\nBall Speed: " + ballSpeed.ToString("F2") +
-                "\nHardmode In: " + remainingTime.ToString("F1") + "s";
+                "\nHardmode In: " + remainingTime.ToString("F1") + "s" +
+                "\nHardmode Active: " + hardModeActive;
         }
     }
 }
