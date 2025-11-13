@@ -16,9 +16,10 @@ namespace Minigame.TowerBuilder
         [SerializeField] private int bulletCount = 3;
         [SerializeField] private float bulletVelocity;
         [SerializeField] private float spreadAngle = 15f;
-        [SerializeField] private float initialAttackDelay; // so the wolf wouldn't start attack as soon as scene is played
+        [SerializeField] public float initialAttackDelay; // so the wolf wouldn't start attack as soon as scene is played
         [SerializeField] private float cooldownBetweenShots;
-        private float nextTimeToShoot;
+        public float nextTimeToShoot;
+        public bool canAttack = true;
 
 
         private IObjectPool<BulletProjectile> bulletPool;
@@ -31,7 +32,19 @@ namespace Minigame.TowerBuilder
 
         private void Update()
         {
-            Attack();
+            /*if (canAttack)
+            {
+                Attack();
+            }
+            else
+            {
+                // sum logic here, my brains too fried to think lol
+            }*/
+
+            if (canAttack)
+            {
+                Attack();
+            }
         }
 
         private void Attack()

@@ -10,6 +10,7 @@ namespace Minigame.TowerBuilder
         [Header("References")]
         [SerializeField] private DropBlock dropController;
         [SerializeField] private Transform spawnPoint;
+        [SerializeField] private GameManager gameManager;
 
         [Header("Config Instantiate")]
         [SerializeField] private GameObject blockPrefab;
@@ -36,6 +37,10 @@ namespace Minigame.TowerBuilder
 
         private void Start()
         {
+            if (gameManager != null)
+            {
+                currentStage = gameManager.CurrentStage;
+            }
             SpawnNextBlock();
         }
 
@@ -80,8 +85,6 @@ namespace Minigame.TowerBuilder
             placedBlocks.Add(block);
             lastPlacedBlock = block;
 
-            CheckStageProgression();
-
             isWaitingForNextBlock = true;
             Invoke(nameof(ReadyNextBlock), spawnDelay);
         }
@@ -97,45 +100,69 @@ namespace Minigame.TowerBuilder
             return distance <= alignmentTolerance;
         }
 
-        private void CheckStageProgression()
+
+
+        private void ReadyNextBlock()
+        {
+            isWaitingForNextBlock = false;
+            SpawnNextBlock();
+        }
+
+        public BlockType CheckStageProgression()
         {
             switch (currentStage)
             {
                 case BlockType.Brick:
                     if (maxAlignedStreak >= brickAlignedThreshold && totalBlocksPlaced >= brickStackThreshold)
                     {
-                        hasMetBrickRequirement = true;
+                        // hasMetBrickRequirement = true;
+                        return BlockType.Brick;
                     }
-                    else if (totalBlocksPlaced >= brickStackThreshold && maxAlignedStreak < brickStackThreshold)
+                    else 
                     {
-                        TransitionToStage(BlockType.Wood);
+                        return BlockType.Wood;
                     }
-                    break;
                 case BlockType.Wood:
                     if (maxAlignedStreak >= woodAlignedThreshold && totalBlocksPlaced >= woodStackThreshold)
                     {
-                        hasMetWoodRequirement = true;
-                    } 
+                        // hasMetWoodRequirement = true;
+                        return BlockType.Wood;
+                    }
                     else
                     {
-                        TransitionToStage(BlockType.Straw);
+                        return BlockType.Straw;
                     }
-                    break;
                 case BlockType.Straw:
                     // B A C K L O G : transition to next scene or dialogue sequence
-                    break;
+                    return BlockType.Straw;
+
+                default:
+                    return currentStage;
             }
         }
 
-        private void TransitionToStage(BlockType nextStage)
+
+        public void ResetForNewGame()
         {
-            currentStage = nextStage;
+            totalBlocksPlaced = 0;
+            currentAlignedStreak = 0;
+            maxAlignedStreak = 0;
+            lastPlacedBlock = null;
+            placedBlocks.Clear();
         }
 
-        private void ReadyNextBlock()
+
+        public int GetTotalBlocksPlaced() => totalBlocksPlaced;
+        public int GetCurrentStreak() => currentAlignedStreak;
+        public int GetMaxStreak() => maxAlignedStreak;
+        public BlockType GetCurrentStage() => currentStage;
+        public float GetTowerHeight()
         {
-            isWaitingForNextBlock = false;
-            SpawnNextBlock();
+            if (lastPlacedBlock != null)
+            {
+                return lastPlacedBlock.transform.position.y;
+            }
+            return 0f;
         }
     }
 }
